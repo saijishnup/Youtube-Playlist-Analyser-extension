@@ -1,0 +1,10 @@
+# API key — never commit this
+config.js
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/

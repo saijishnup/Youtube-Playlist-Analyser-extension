@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Playlist Analyzer",
+  "version": "1.0.0",
+  "description": "Analyze YouTube playlist durations instantly.",
+  "author": "saijishnup",
+
+  "permissions": [
+    "storage"
+  ],
+
+  "host_permissions": [
+    "https://www.googleapis.com/*"
+  ],
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "YouTube Playlist Analyzer",
+    "default_icon": {
+      "32": "icons/icons-32.png",
+      "64": "icons/icons8-64.png"
+    }
+  },
+
+  "icons": {
+    "32": "icons/icons-32.png",
+    "48": "icons/icons-50.png",
+    "64": "icons/icons8-64.png",
+    "128": "icons/icons8-100.png"
+  }
+}
