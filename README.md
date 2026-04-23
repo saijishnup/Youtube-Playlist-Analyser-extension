@@ -17,11 +17,11 @@ A minimal Chrome extension to analyze YouTube playlist durations — with cachin
 
 ### 2. Add Your API Key
 
-Open `js/api.js` and replace:
+Copy `config-example.js` to `config.js`, then set:
 ```js
 const API_KEY = 'YOUR_API_KEY_HERE';
 ```
-with your actual key.
+to your real key.
 
 > **Recommended:** Restrict your key to the YouTube Data API v3 and your extension ID in the Google Cloud Console to prevent misuse.
 
