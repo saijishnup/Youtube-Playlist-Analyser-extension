@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YT Playlist Analyzer</title>
+
+  <!-- Google Fonts: Distinctive pairing — Syne (display) + DM Mono (data) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="popup.css" />
+</head>
+
+<body>
+
+  <!-- ════════════════════════════════════════
+       HEADER
+  ═══════════════════════════════════════════ -->
+  <header class="header">
+    <div class="header__logo">
+      <span class="header__logo-icon">▶</span>
+      <span class="header__logo-text">playlist<strong>analyzer</strong></span>
+    </div>
+
+    <!-- Theme Toggle -->
+    <button class="btn-theme" id="themeToggle" title="Toggle theme" aria-label="Toggle dark/light theme">
+      🌓
+    </button>
+  </header>
+
+  <!-- ════════════════════════════════════════
+       PART A — INPUT SECTION
+  ═══════════════════════════════════════════ -->
+  <section class="section section--input" id="partA">
+
+    <!-- Playlist URL Input -->
+    <div class="input-group input-group--url">
+      <label class="input-label" for="playlistUrl">Playlist URL</label>
+      <div class="input-wrapper">
+        <span class="input-icon">🔗</span>
+        <input
+          type="text"
+          id="playlistUrl"
+          class="input-field"
+          placeholder="https://youtube.com/playlist?list=..."
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button class="btn-clear" id="clearUrl" title="Clear" aria-label="Clear URL">✕</button>
+      </div>
+    </div>
+
+    <!-- Range Inputs: From / To (optional) -->
+    <div class="input-row">
+      <div class="input-group input-group--range">
+        <label class="input-label" for="fromVideo">From <span class="label-hint">(optional)</span></label>
+        <input
+          type="number"
+          id="fromVideo"
+          class="input-field input-field--range"
+          placeholder="1"
+          min="1"
+        />
+      </div>
+
+      <div class="range-divider" aria-hidden="true">→</div>
+
+      <div class="input-group input-group--range">
+        <label class="input-label" for="toVideo">To <span class="label-hint">(optional)</span></label>
+        <input
+          type="number"
+          id="toVideo"
+          class="input-field input-field--range"
+          placeholder="end"
+          min="1"
+        />
+      </div>
+    </div>
+
+    <!-- Action Buttons Row -->
+    <div class="btn-row">
+      <button class="btn btn--primary" id="analyzeBtn">
+        <span class="btn__icon">◎</span>
+        <span class="btn__text">Analyze</span>
+      </button>
+
+      <!-- Recent Searches skeuomorphic toggle -->
+      <div class="toggle-wrap">
+        <span class="toggle-label">Recent</span>
+        <label class="toggle-switch" for="recentToggle" aria-label="Toggle recent searches">
+          <input type="checkbox" id="recentToggle" />
+          <span class="toggle-track">
+            <span class="toggle-thumb"></span>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Error / Status Message -->
+    <div class="status-msg" id="statusMsg" role="alert" aria-live="polite" hidden></div>
+
+  </section>
+
+  <!-- ════════════════════════════════════════
+       PART B — RECENT SEARCHES DROPDOWN
+       (Shown only when toggle is ON)
+       Overlaps Part C
+  ═══════════════════════════════════════════ -->
+  <div class="recent-overlay" id="recentOverlay" hidden>
+    <div class="recent-header">
+      <span class="recent-title">Recent Searches</span>
+      <button class="btn-recent-close" id="closeRecent" aria-label="Close recent searches">↓</button>
+    </div>
+
+    <ul class="recent-list" id="recentList" role="listbox" aria-label="Recent searches">
+      <!-- Dynamically injected by ui.js -->
+      <!-- Example item structure (for reference, not rendered):
+      <li class="recent-item" role="option" tabindex="0" data-id="PLxxxxxx">
+        <img class="recent-thumb" src="..." alt="" />
+        <div class="recent-info">
+          <span class="recent-playlist-title">Playlist Title</span>
+          <span class="recent-channel">Channel Name</span>
+        </div>
+      </li>
+      -->
+    </ul>
+
+    <div class="recent-empty" id="recentEmpty" hidden>
+      <span>No recent searches yet.</span>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       PART C — RESULTS SECTION
+  ═══════════════════════════════════════════ -->
+  <section class="section section--results" id="partC" hidden>
+
+    <!-- Playlist Meta -->
+    <div class="results-meta">
+      <div class="results-meta__top">
+        <div class="results-meta__title-row">
+          <h2 class="results-title" id="resTitle">—</h2>
+          <a
+            class="btn-open"
+            id="resOpenLink"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Open playlist in YouTube"
+            aria-label="Open playlist in new tab"
+          >↗</a>
+        </div>
+        <p class="results-meta__id">ID: <span id="resId">—</span></p>
+        <p class="results-meta__creator">Creator: <span id="resCreator">—</span></p>
+      </div>
+
+      <div class="results-stats">
+        <div class="stat-chip">
+          <span class="stat-chip__label">Videos</span>
+          <span class="stat-chip__value" id="resVideoCount">—</span>
+        </div>
+        <div class="stat-chip stat-chip--muted" id="unavailableChip" hidden>
+          <span class="stat-chip__label">Unavailable</span>
+          <span class="stat-chip__value" id="resUnavailable">—</span>
+        </div>
+        <div class="stat-chip">
+          <span class="stat-chip__label">Average</span>
+          <span class="stat-chip__value" id="resAverage">—</span>
+        </div>
+        <div class="stat-chip stat-chip--accent">
+          <span class="stat-chip__label">Total</span>
+          <span class="stat-chip__value" id="resTotal">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider" aria-hidden="true"></div>
+
+    <!-- Playback Speed Section -->
+    <div class="speed-section">
+      <h3 class="speed-section__title">Playback Speed</h3>
+
+      <ul class="speed-list" id="speedList" aria-label="Playback speed durations">
+        <li class="speed-item" data-speed="1.25">
+          <span class="speed-item__label">1.25×</span>
+          <span class="speed-item__arrow">→</span>
+          <span class="speed-item__value" id="speed125">—</span>
+        </li>
+        <li class="speed-item" data-speed="1.50">
+          <span class="speed-item__label">1.50×</span>
+          <span class="speed-item__arrow">→</span>
+          <span class="speed-item__value" id="speed150">—</span>
+        </li>
+        <li class="speed-item" data-speed="1.75">
+          <span class="speed-item__label">1.75×</span>
+          <span class="speed-item__arrow">→</span>
+          <span class="speed-item__value" id="speed175">—</span>
+        </li>
+        <li class="speed-item" data-speed="2.00">
+          <span class="speed-item__label">2.00×</span>
+          <span class="speed-item__arrow">→</span>
+          <span class="speed-item__value" id="speed200">—</span>
+        </li>
+
+        <!-- Custom Speed Row -->
+        <li class="speed-item speed-item--custom">
+          <span class="speed-item__label">
+            Custom
+            <input
+              type="number"
+              id="customSpeed"
+              class="input-field input-field--speed"
+              value="1.00"
+              min="0.25"
+              max="10"
+              step="0.05"
+              aria-label="Custom playback speed"
+            />×
+          </span>
+          <span class="speed-item__arrow">→</span>
+          <span class="speed-item__value" id="speedCustom">—</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Loading Spinner (shown during fetch) -->
+    <div class="loader" id="loader" hidden aria-label="Loading" role="status">
+      <div class="loader__ring"></div>
+      <span class="loader__text">Fetching playlist…</span>
+    </div>
+
+  </section>
+
+  <!-- ════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════ -->
+  <footer class="footer">
+    <a class="footer__link" href="#" id="privacyLink" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+    <span class="footer__sep" aria-hidden="true">|</span>
+    <a class="footer__link" href="https://github.com/saijishnup" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <span class="footer__sep" aria-hidden="true">|</span>
+    <span class="footer__copy">© saijishnup 2026</span>
+  </footer>
+
+  <!-- JS modules loaded in dependency order -->
+  <script src="js/theme.js"></script>
+  <script src="js/cache.js"></script>
+  <script src="js/parser.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="popup.js"></script>
+
+</body>
+</html>
