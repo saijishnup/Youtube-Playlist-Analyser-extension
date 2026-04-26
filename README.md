@@ -1,107 +1,66 @@
 # YouTube Playlist Analyzer
 
-A minimal Chrome extension to analyze YouTube playlist durations — with caching, speed breakdowns, and recent searches.
-
----
+A Chrome extension to analyze YouTube playlist duration with caching, speed breakdowns, and recent history.
 
 ## Setup
 
-### 1. Get a YouTube Data API v3 Key
+1. Create a YouTube Data API v3 key in Google Cloud Console.
+2. Copy `config-example.js` to `config.js`.
+3. Put your key in `config.js`:
 
-1. Go to [console.cloud.google.com](https://console.cloud.google.com)
-2. Create a project (or select existing)
-3. Navigate to **APIs & Services → Library**
-4. Search **YouTube Data API v3** → Enable it
-5. Go to **APIs & Services → Credentials → Create Credentials → API Key**
-6. Copy the key
-
-### 2. Add Your API Key
-
-Copy `config-example.js` to `config.js`, then set:
 ```js
 const API_KEY = 'YOUR_API_KEY_HERE';
 ```
-to your real key.
 
-> **Recommended:** Restrict your key to the YouTube Data API v3 and your extension ID in the Google Cloud Console to prevent misuse.
+Note: `config.js` is the actual runtime file used by the extension. `config-example.js` is only a template for users.
 
-### 3. Load the Extension in Chrome
+## Load In Chrome
 
-1. Open `chrome://extensions`
-2. Enable **Developer Mode** (top right toggle)
-3. Click **Load Unpacked**
-4. Select the `youtube-playlist-analyzer/` folder
-5. The extension icon appears in your toolbar
+1. Open `chrome://extensions`.
+2. Enable Developer mode.
+3. Click Load unpacked.
+4. Select the `yt-playlist-analyzer/` folder.
 
----
+## Current Features
 
-## Usage
-
-| Feature | How |
-|---|---|
-| Analyze a playlist | Paste URL → click Analyze |
-| Analyze a range | Fill From / To → click Analyze |
-| Revisit past analysis | Toggle Recent → click any entry |
-| Switch theme | Click 🌓 |
-| Open playlist | Click ↗ next to title |
-
----
+- Analyze full playlist duration from URL.
+- Optional range analysis with From and To.
+- Speed breakdown rows for 1.25x, 1.50x, 1.75x, 2.00x, and custom speed.
+- Recent searches overlay with playlist thumbnail, title, channel, and cached date/time.
+- Close Results button in results header.
+- Theme toggle (dark/light).
+- Local caching with `chrome.storage.local`.
 
 ## File Structure
 
 ```
-youtube-playlist-analyzer/
-├── manifest.json       Chrome extension manifest (MV3)
-├── popup.html          UI shell
-├── popup.css           Matte grain theme system
-├── popup.js            Main orchestrator
-├── icons/              Extension icons
-└── js/
-    ├── api.js          YouTube Data API v3 integration
-    ├── parser.js       ISO 8601 duration parsing & speed math
-    ├── cache.js        chrome.storage.local cache layer
-    ├── ui.js           DOM rendering & UI state
-    └── theme.js        Dark / light theme toggle
+yt-playlist-analyzer/
+|- manifest.json
+|- popup.html
+|- popup.css
+|- popup.js
+|- config.js
+|- config-example.js
+|- privacy-policy.html
+|- icons/
+`- js/
+   |- api.js
+   |- cache.js
+   |- parser.js
+   |- theme.js
+   `- ui.js
 ```
-
----
-
-## API Quota
-
-YouTube Data API v3 gives **10,000 units/day** free.
-
-| Operation | Cost |
-|---|---|
-| Playlist metadata | 1 unit |
-| Playlist items (per page) | 1 unit |
-| Video durations (per batch) | 1 unit |
-| **Typical 100-video playlist** | ~5–7 units |
-
-Cached playlists cost **0 units** on repeat visits.
-
-If quota is exceeded, the extension shows the reset time (YouTube resets at midnight Pacific Time).
-
----
-
-## Edge Cases Handled
-
-| Situation | Behaviour |
-|---|---|
-| Invalid URL | Error message shown |
-| Private playlist | "Access denied" message |
-| Empty playlist | "Empty playlist" message |
-| Unavailable videos | Counted separately, excluded from duration |
-| Quota exceeded | Shows reset time |
-| YouTube server error | Retry message shown |
-
----
 
 ## Privacy
 
-- No data is sent to any server other than the YouTube Data API
-- All cache stored locally via `chrome.storage.local`
-- No analytics, no tracking
+See `privacy-policy.html` for the full privacy policy.
 
----
+Summary:
 
-© saijishnup 2026
+- Data is fetched only from the YouTube Data API.
+- Cached results are stored locally in the browser.
+- No analytics and no third-party tracking.
+
+## Author
+
+saijishnup

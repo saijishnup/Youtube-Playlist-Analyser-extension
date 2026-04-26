@@ -10,7 +10,7 @@
 'use strict';
 
 /* ── API key is loaded from config.js (never committed) ──
-   See config.example.js for setup instructions.
+  config-example.js is only a template to show required structure.
 ──────────────────────────────────────────────────────── */
 // API_KEY is declared in config.js, loaded before this script in popup.html
 

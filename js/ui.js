@@ -14,6 +14,7 @@ const els = {
   partC:        $('partC'),
   resTitle:     $('resTitle'),
   resOpenLink:  $('resOpenLink'),
+  resCloseBtn:  $('resCloseBtn'),
   resId:        $('resId'),
   resCreator:   $('resCreator'),
   resVideoCount:$('resVideoCount'),
@@ -171,6 +172,8 @@ async function renderRecents() {
   els.recentEmpty.hidden = true;
 
   recents.forEach(entry => {
+    const { dateText, timeText } = formatRecentDateTime(entry.cachedAt);
+
     const li = document.createElement('li');
     li.className  = 'recent-item';
     li.role       = 'option';
@@ -186,6 +189,10 @@ async function renderRecents() {
         <span class="recent-playlist-title">${escapeHtml(entry.title)}</span>
         <span class="recent-channel">${escapeHtml(entry.channel)}</span>
       </div>
+      <div class="recent-meta" aria-hidden="true">
+        <span class="recent-date">${dateText}</span>
+        <span class="recent-time">${timeText}</span>
+      </div>
     `;
 
     /* Click or Enter → load cached result */
@@ -195,6 +202,25 @@ async function renderRecents() {
 
     els.recentList.appendChild(li);
   });
+}
+
+function formatRecentDateTime(timestamp) {
+  if (!timestamp || Number.isNaN(Number(timestamp))) {
+    return { dateText: '--', timeText: '--' };
+  }
+
+  const dt = new Date(Number(timestamp));
+  return {
+    dateText: dt.toLocaleDateString(undefined, {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    }),
+    timeText: dt.toLocaleTimeString(undefined, {
+      hour: '2-digit',
+      minute: '2-digit',
+    }),
+  };
 }
 
 /** Loads a cached entry into the results without an API call */
@@ -218,16 +244,25 @@ function loadRecentEntry(entry) {
 ══════════════════════════════════════════════════════ */
 
 function toggleRecentOverlay(force) {
-  const show = force !== undefined ? force : !els.recentToggle.checked;
+  const show = force !== undefined ? force : els.recentOverlay.hidden;
 
   if (show) {
     renderRecents();
     els.recentOverlay.hidden = false;
+    els.recentToggle.setAttribute('aria-pressed', 'true');
+    document.body.classList.add('recent-open');
   } else {
     els.recentOverlay.hidden = true;
-    /* Uncheck toggle if closed via ↓ button */
-    els.recentToggle.checked = false;
+    els.recentToggle.setAttribute('aria-pressed', 'false');
+    document.body.classList.remove('recent-open');
   }
+}
+
+function bindResultsControls() {
+  els.resCloseBtn.addEventListener('click', () => {
+    resetResults();
+    toggleRecentOverlay(false);
+  });
 }
 
 /* ══════════════════════════════════════════════════════
@@ -248,8 +283,8 @@ function bindClearButton() {
 ══════════════════════════════════════════════════════ */
 
 function bindRecentControls() {
-  els.recentToggle.addEventListener('change', () => {
-    toggleRecentOverlay(els.recentToggle.checked);
+  els.recentToggle.addEventListener('click', () => {
+    toggleRecentOverlay();
   });
 
   els.closeRecent.addEventListener('click', () => {
