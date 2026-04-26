@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initTheme();         /* theme.js — apply saved dark/light preference */
   bindClearButton();   /* ui.js   — wire ✕ button on URL input */
   bindRecentControls();/* ui.js   — wire toggle + close button */
+  bindResultsControls();/* ui.js  — wire results close (X) button */
   bindAnalyzeButton(); /* below   — wire Analyze button */
   bindCustomSpeed();   /* below   — will be re-bound after results render */
 });

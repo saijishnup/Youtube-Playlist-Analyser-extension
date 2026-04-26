@@ -23,8 +23,8 @@
   ═══════════════════════════════════════════ -->
   <header class="header">
     <div class="header__logo">
-      <span class="header__logo-icon">▶</span>
-      <span class="header__logo-text">playlist<strong>analyzer</strong></span>
+      <img class="header__logo-icon" src="icons/icons-200.png" alt="Playlist Analyzer icon" />
+      <span class="header__logo-text">Playlist <strong> analyzer</strong></span>
     </div>
 
     <!-- Theme Toggle -->
@@ -89,16 +89,14 @@
         <span class="btn__text">Analyze</span>
       </button>
 
-      <!-- Recent Searches skeuomorphic toggle -->
-      <div class="toggle-wrap">
-        <span class="toggle-label">Recent</span>
-        <label class="toggle-switch" for="recentToggle" aria-label="Toggle recent searches">
-          <input type="checkbox" id="recentToggle" />
-          <span class="toggle-track">
-            <span class="toggle-thumb"></span>
-          </span>
-        </label>
-      </div>
+      <!-- Recent Searches toggle button -->
+      <button
+        class="btn btn--toggle"
+        id="recentToggle"
+        type="button"
+        aria-label="Toggle recent searches"
+        aria-pressed="false"
+      >Recent</button>
     </div>
 
     <!-- Error / Status Message -->
@@ -114,7 +112,7 @@
   <div class="recent-overlay" id="recentOverlay" hidden>
     <div class="recent-header">
       <span class="recent-title">Recent Searches</span>
-      <button class="btn-recent-close" id="closeRecent" aria-label="Close recent searches">↓</button>
+      <button class="btn-recent-close" id="closeRecent" aria-label="Close recent searches">✕</button>
     </div>
 
     <ul class="recent-list" id="recentList" role="listbox" aria-label="Recent searches">
@@ -154,6 +152,13 @@
             title="Open playlist in YouTube"
             aria-label="Open playlist in new tab"
           >↗</a>
+          <button
+            class="btn-close-results"
+            id="resCloseBtn"
+            type="button"
+            title="Clear results"
+            aria-label="Clear results"
+          >X</button>
         </div>
         <p class="results-meta__id">ID: <span id="resId">—</span></p>
         <p class="results-meta__creator">Creator: <span id="resCreator">—</span></p>
@@ -161,7 +166,7 @@
 
       <div class="results-stats">
         <div class="stat-chip">
-          <span class="stat-chip__label">Videos</span>
+          <span class="stat-chip__label stat-chip__label--priority">Videos</span>
           <span class="stat-chip__value" id="resVideoCount">—</span>
         </div>
         <div class="stat-chip stat-chip--muted" id="unavailableChip" hidden>
@@ -169,7 +174,7 @@
           <span class="stat-chip__value" id="resUnavailable">—</span>
         </div>
         <div class="stat-chip">
-          <span class="stat-chip__label">Average</span>
+          <span class="stat-chip__label stat-chip__label--priority">Average</span>
           <span class="stat-chip__value" id="resAverage">—</span>
         </div>
         <div class="stat-chip stat-chip--accent">
@@ -186,23 +191,23 @@
       <h3 class="speed-section__title">Playback Speed</h3>
 
       <ul class="speed-list" id="speedList" aria-label="Playback speed durations">
-        <li class="speed-item" data-speed="1.25">
-          <span class="speed-item__label">1.25×</span>
+        <li class="speed-item speed-item--preset" data-speed="1.25">
+          <span class="speed-item__label">1.25x</span>
           <span class="speed-item__arrow">→</span>
           <span class="speed-item__value" id="speed125">—</span>
         </li>
-        <li class="speed-item" data-speed="1.50">
-          <span class="speed-item__label">1.50×</span>
+        <li class="speed-item speed-item--preset" data-speed="1.50">
+          <span class="speed-item__label">1.50x</span>
           <span class="speed-item__arrow">→</span>
           <span class="speed-item__value" id="speed150">—</span>
         </li>
-        <li class="speed-item" data-speed="1.75">
-          <span class="speed-item__label">1.75×</span>
+        <li class="speed-item speed-item--preset" data-speed="1.75">
+          <span class="speed-item__label">1.75x</span>
           <span class="speed-item__arrow">→</span>
           <span class="speed-item__value" id="speed175">—</span>
         </li>
-        <li class="speed-item" data-speed="2.00">
-          <span class="speed-item__label">2.00×</span>
+        <li class="speed-item speed-item--preset" data-speed="2.00">
+          <span class="speed-item__label">2.00x</span>
           <span class="speed-item__arrow">→</span>
           <span class="speed-item__value" id="speed200">—</span>
         </li>
@@ -220,7 +225,7 @@
               max="10"
               step="0.05"
               aria-label="Custom playback speed"
-            />×
+            />x
           </span>
           <span class="speed-item__arrow">→</span>
           <span class="speed-item__value" id="speedCustom">—</span>
@@ -240,7 +245,7 @@
        FOOTER
   ═══════════════════════════════════════════ -->
   <footer class="footer">
-    <a class="footer__link" href="#" id="privacyLink" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+    <a class="footer__link" href="privacy-policy.html" id="privacyLink" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
     <span class="footer__sep" aria-hidden="true">|</span>
     <a class="footer__link" href="https://github.com/saijishnup" target="_blank" rel="noopener noreferrer">GitHub</a>
     <span class="footer__sep" aria-hidden="true">|</span>
