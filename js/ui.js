@@ -189,16 +189,37 @@ async function renderRecents() {
         <span class="recent-playlist-title">${escapeHtml(entry.title)}</span>
         <span class="recent-channel">${escapeHtml(entry.channel)}</span>
       </div>
-      <div class="recent-meta" aria-hidden="true">
-        <span class="recent-date">${dateText}</span>
-        <span class="recent-time">${timeText}</span>
+      <div class="recent-side">
+        <div class="recent-meta" aria-hidden="true">
+          <span class="recent-date">${dateText}</span>
+          <span class="recent-time">${timeText}</span>
+        </div>
+        <button
+          class="btn-recent-delete"
+          type="button"
+          aria-label="Remove from recent searches"
+          title="Remove"
+        >✕</button>
       </div>
     `;
 
     /* Click or Enter → load cached result */
     const load = () => loadRecentEntry(entry);
     li.addEventListener('click', load);
-    li.addEventListener('keydown', e => { if (e.key === 'Enter') load(); });
+    li.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.target.closest('.btn-recent-delete')) load();
+    });
+
+    const deleteBtn = li.querySelector('.btn-recent-delete');
+    deleteBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      removeFromCache(entry.id);
+      li.remove();
+
+      if (!els.recentList.children.length) {
+        els.recentEmpty.hidden = false;
+      }
+    });
 
     els.recentList.appendChild(li);
   });
